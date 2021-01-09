@@ -3,10 +3,13 @@ CC = gcc
 C_SRCS  = $(wildcard *.c)
 C_OBJS  = $(C_SRCS:.c=.c.o)
 
-DEFS    = 
-INCS    = -I../include
+SLEEF_INSTALL_DIR = $(HOME)/sleef/build-sve/install
+
+DEFS    = -DUSE_SLEEF
+INCS    = -I../include -I$(SLEEF_INSTALL_DIR)/include
 CFLAGS  = $(INCS) -Wall -g -std=gnu11 -O3 -fopenmp -fPIC $(DEFS)
-LDFLAGS = -fopenmp
+LDFLAGS = -fopenmp -L$(SLEEF_INSTALL_DIR)/lib64
+LIBS    = -lsleef
 
 ifeq ($(shell $(CC) --version 2>&1 | grep -c "gcc"), 1)
 AR      = ar rcs

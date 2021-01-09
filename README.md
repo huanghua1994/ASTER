@@ -11,8 +11,8 @@ Vector types:
 
 * `vec_f`: data vector for single-precision floating point numbers (float, fp32), each vector has `SIMD_LEN_S` lanes (elements)
 * `vec_d`: data vector for double-precision floating point numbers (double, fp64), each vector has `SIMD_LEN_D` lanes (elements)
-* `vec_cmp_f`: mask vector for `vec_f`
-* `vec_cmp_d`: mask vector for `vec_d`
+* `vec_cmp_f`: comparing & mask vector for `vec_f`
+* `vec_cmp_d`: comparing & mask vector for `vec_d`
 
 
 
@@ -39,13 +39,13 @@ vec_fnmadd_*(a, b, c)   : Return lane-wise Fused Negative Multiply-Add  -<a[i]> 
 vec_fmsub_* (a, b, c)   : Return lane-wise Fused Multiply-Sub intrinsic  <a[i]> * <b[i]> - <c[i]>
 vec_max_*(a, b)         : Return lane-wise max(<a[i]>, <b[i]>)
 vec_min_*(a, b)         : Return lane-wise min(<a[i]>, <b[i]>)
-vec_cmp_eq_*(a, b)      : Return lane-wise if(<a[i]> == <b[i]>)
-vec_cmp_ne_*(a, b)      : Return lane-wise if(<a[i]> != <b[i]>)
-vec_cmp_lt_*(a, b)      : Return lane-wise if(<a[i]> <  <b[i]>)
-vec_cmp_le_*(a, b)      : Return lane-wise if(<a[i]> <= <b[i]>)
-vec_cmp_gt_*(a, b)      : Return lane-wise if(<a[i]> >  <b[i]>)
-vec_cmp_ge_*(a, b)      : Return lane-wise if(<a[i]> >= <b[i]>)
-vec_blend_*(a, b, m)    : Return lane-wise (<m[i]> == 1 ? <b[i]> : <a[i]>), a and b are data vectors, m is a mask vector
+vec_cmp_eq_*(a, b)      : Return lane-wise if(<a[i]> == <b[i]>) compare vector
+vec_cmp_ne_*(a, b)      : Return lane-wise if(<a[i]> != <b[i]>) compare vector
+vec_cmp_lt_*(a, b)      : Return lane-wise if(<a[i]> <  <b[i]>) compare vector
+vec_cmp_le_*(a, b)      : Return lane-wise if(<a[i]> <= <b[i]>) compare vector
+vec_cmp_gt_*(a, b)      : Return lane-wise if(<a[i]> >  <b[i]>) compare vector
+vec_cmp_ge_*(a, b)      : Return lane-wise if(<a[i]> >= <b[i]>) compare vector
+vec_blend_*(a, b, m)    : Return lane-wise (<m[i]> == 1 ? <b[i]> : <a[i]>), a and b are data vectors, m is a compare vector
 vec_reduce_add_*(a)     : Return a single value sum(<a[i]>)
 vec_frsqrt_pf_*()       : Return scaling prefactor for vec_frsqrt_*()
 vec_frsqrt_*(a)         : Return lane-wise fast reverse square root <a[i]> == 0 ? 0 : 1 / (sqrt(<a[i]>) * vec_frsqrt_pf_*())
@@ -85,13 +85,12 @@ Tested platforms:
 | Intel Xeon E5 2670       | AVX             | Ubuntu 18.04, x64      | GCC 7.5.0 & ICC 19.1.1 |
 | Intel Core i5-7300U      | AVX2            | macOS 10.15.4, x64     | GCC 9.2.0              |
 | AMD Threadripper 2950X   | AVX2            | WSL2 Ubuntu 20.04, x64 | GCC 9.3.0              |
-| Fujitsu A64FX            | SVE-512         | CentOS 8.3, aarch64    | GCC 10.2.0             |
+| Fujitsu A64FX            | SVE-512 & NEON  | CentOS 8.3, aarch64    | GCC 10.2.0             |
 
 
 
 Todo-list:
 
-* Add ARM clang compiler flags in `examples/aarch64-sve.make`. 
+* Add ARM clang compiler flags in `examples/aarch64-sve.make`
 
-* Add `log`, `exp`, `pow`, `sin`, `cos`, `erf` functions support for SVE
 

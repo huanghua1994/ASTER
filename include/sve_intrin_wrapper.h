@@ -173,34 +173,67 @@ static inline vec_d vec_arsqrt_d(const vec_d a)
 }
 
 #ifdef USE_SLEEF
-// TODO: add log, exp, pow, sin, cos, erf functions
-#else
-static inline vec_f vec_log_s(vec_f x)
+#include "sleef.h"
+
+static inline vec_f vec_log_s  (vec_f a) { return Sleef_logfx_u10sve(a);   }
+static inline vec_d vec_log_d  (vec_d a) { return Sleef_logdx_u10sve(a);   }
+
+static inline vec_f vec_log2_s (vec_f a) { return Sleef_log2fx_u10sve(a);  }
+static inline vec_d vec_log2_d (vec_d a) { return Sleef_log2dx_u10sve(a);  }
+
+static inline vec_f vec_log10_s(vec_f a) { return Sleef_log10fx_u10sve(a); }
+static inline vec_d vec_log10_d(vec_d a) { return Sleef_log10dx_u10sve(a); }
+
+static inline vec_f vec_exp_s  (vec_f a) { return Sleef_expfx_u10sve(a);   }
+static inline vec_d vec_exp_d  (vec_d a) { return Sleef_expdx_u10sve(a);   }
+
+static inline vec_f vec_exp2_s (vec_f a) { return Sleef_exp2fx_u10sve(a);  }
+static inline vec_d vec_exp2_d (vec_d a) { return Sleef_exp2dx_u10sve(a);  }
+
+static inline vec_f vec_exp10_s(vec_f a) { return Sleef_exp10fx_u10sve(a); }
+static inline vec_d vec_exp10_d(vec_d a) { return Sleef_exp10dx_u10sve(a); }
+
+static inline vec_f vec_pow_s  (vec_f a, vec_f b) { return Sleef_powfx_u10sve(a, b); }
+static inline vec_d vec_pow_d  (vec_d a, vec_d b) { return Sleef_powdx_u10sve(a, b); }
+
+static inline vec_f vec_sin_s  (vec_f a) { return Sleef_sinfx_u10sve(a);   }
+static inline vec_d vec_sin_d  (vec_d a) { return Sleef_sindx_u10sve(a);   }
+
+static inline vec_f vec_cos_s  (vec_f a) { return Sleef_cosfx_u10sve(a);   }
+static inline vec_d vec_cos_d  (vec_d a) { return Sleef_cosdx_u10sve(a);   }
+
+static inline vec_f vec_erf_s  (vec_f a) { return Sleef_erffx_u10sve(a);   }
+static inline vec_d vec_erf_d  (vec_d a) { return Sleef_erfdx_u10sve(a);   }
+
+#else  // Else of "#ifdef USE_SLEEF"
+
+#warning SLEEF library not presented, neon_intrin_wrapper.h will use for-loop implementations.
+static inline vec_f vec_log_s(vec_f a)
 {
     int i;
-    union vec_f_union u = {x}, res;
+    union vec_f_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = logf(u.f[i]);
     return res.v;
 }
-static inline vec_d vec_log_d(vec_d x)
+static inline vec_d vec_log_d(vec_d a)
 {
     int i;
-    union vec_d_union u = {x}, res;
+    union vec_d_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = log(u.d[i]);
     return res.v;
 }
 
-static inline vec_f vec_exp_s(vec_f x)
+static inline vec_f vec_exp_s(vec_f a)
 {
     int i;
-    union vec_f_union u = {x}, res;
+    union vec_f_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = expf(u.f[i]);
     return res.v;
 }
-static inline vec_d vec_exp_d(vec_d x)
+static inline vec_d vec_exp_d(vec_d a)
 {
     int i;
-    union vec_d_union u = {x}, res;
+    union vec_d_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = exp(u.d[i]);
     return res.v;
 }

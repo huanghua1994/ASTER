@@ -247,33 +247,33 @@ static inline vec_d vec_cos_d  (const vec_d a) { return _ZGVdN4v_cos (a);   }
 
 #else   // Else of "#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 22"
 
-#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use for-loop implementations. 
-static inline vec_f vec_log_s(vec_f x)
+#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use for-loop implementations.
+static inline vec_f vec_log_s(vec_f a)
 {
     int i;
-    union vec_f_union u = {x}, res;
+    union vec_f_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = logf(u.f[i]);
     return res.v;
 }
-static inline vec_d vec_log_d(vec_d x)
+static inline vec_d vec_log_d(vec_d a)
 {
     int i;
-    union vec_d_union u = {x}, res;
+    union vec_d_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = log(u.d[i]);
     return res.v;
 }
 
-static inline vec_f vec_exp_s(vec_f x)
+static inline vec_f vec_exp_s(vec_f a)
 {
     int i;
-    union vec_f_union u = {x}, res;
+    union vec_f_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = expf(u.f[i]);
     return res.v;
 }
-static inline vec_d vec_exp_d(vec_d x)
+static inline vec_d vec_exp_d(vec_d a)
 {
     int i;
-    union vec_d_union u = {x}, res;
+    union vec_d_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = exp(u.d[i]);
     return res.v;
 }
@@ -541,33 +541,33 @@ static inline vec_d vec_cos_d  (const vec_d a) { return _ZGVdN8v_cos (a);   }
 
 #else   // Else of "#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 22"
 
-#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use for-loop implementations. 
-static inline vec_f vec_log_s(vec_f x)
+#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use for-loop implementations.
+static inline vec_f vec_log_s(vec_f a)
 {
     int i;
-    union vec_f_union u = {x}, res;
+    union vec_f_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = logf(u.f[i]);
     return res.v;
 }
-static inline vec_d vec_log_d(vec_d x)
+static inline vec_d vec_log_d(vec_d a)
 {
     int i;
-    union vec_d_union u = {x}, res;
+    union vec_d_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = log(u.d[i]);
     return res.v;
 }
 
-static inline vec_f vec_exp_s(vec_f x)
+static inline vec_f vec_exp_s(vec_f a)
 {
     int i;
-    union vec_f_union u = {x}, res;
+    union vec_f_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = expf(u.f[i]);
     return res.v;
 }
-static inline vec_d vec_exp_d(vec_d x)
+static inline vec_d vec_exp_d(vec_d a)
 {
     int i;
-    union vec_d_union u = {x}, res;
+    union vec_d_union u = {a}, res;
     for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = exp(u.d[i]);
     return res.v;
 }

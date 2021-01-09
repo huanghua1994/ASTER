@@ -49,6 +49,13 @@ vec_blend_*(a, b, m)    : Return lane-wise (<m[i]> == 1 ? <b[i]> : <a[i]>), a an
 vec_reduce_add_*(a)     : Return a single value sum(<a[i]>)
 vec_frsqrt_pf_*()       : Return scaling prefactor for vec_frsqrt_*()
 vec_frsqrt_*(a)         : Return lane-wise fast reverse square root <a[i]> == 0 ? 0 : 1 / (sqrt(<a[i]>) * vec_frsqrt_pf_*())
+```
+
+
+
+The following math functions do not have corresponding native CPU instructions, but they are implemented in 3rd party libraries:
+
+```c
 vec_log_*(a)            : Return lane-wise natural logarithm ln(<a[i]>)
 vec_log2_*(a)           : Return lane-wise base-2  logarithm log2(<a[i]>)
 vec_log10_*(a)          : Return lane-wise base-10 logarithm log10(<a[i]>)
@@ -60,6 +67,10 @@ vec_sin_*(a)            : Return lane-wise sin(<a[i]>)
 vec_cos_*(a)            : Return lane-wise cos(<a[i]>)
 vec_erf_*(a)            : Return lane-wise erf(<a[i]>)
 ```
+
+* On x86, ASTER uses Intel SVML library or GCC libmvec when available
+* On ARM, ASTER uses the [SLEEF](https://github.com/shibatch/sleef) library when available
+* If 3rd party library is not available, ASTER falls back to for-loop implementation
 
 
 

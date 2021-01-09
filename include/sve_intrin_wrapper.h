@@ -48,10 +48,6 @@ extern "C" {
 #define SIMD_LEN_S  16
 #define SIMD_LEN_D  8
 #define USE_SVE512
-typedef svfloat32_t vec_f       __attribute__((arm_sve_vector_bits(512)));
-typedef svfloat64_t vec_d       __attribute__((arm_sve_vector_bits(512)));
-typedef svbool_t    vec_cmp_f   __attribute__((arm_sve_vector_bits(512)));
-typedef svbool_t    vec_cmp_d   __attribute__((arm_sve_vector_bits(512)));
 #endif 
 
 #if __ARM_FEATURE_SVE_BITS==1024
@@ -65,6 +61,11 @@ typedef svbool_t    vec_cmp_d   __attribute__((arm_sve_vector_bits(512)));
 #define SIMD_LEN_D  32
 #define USE_SVE2048
 #endif 
+
+typedef svfloat32_t vec_f       __attribute__((arm_sve_vector_bits(__ARM_FEATURE_SVE_BITS)));
+typedef svfloat64_t vec_d       __attribute__((arm_sve_vector_bits(__ARM_FEATURE_SVE_BITS)));
+typedef svbool_t    vec_cmp_f   __attribute__((arm_sve_vector_bits(__ARM_FEATURE_SVE_BITS)));
+typedef svbool_t    vec_cmp_d   __attribute__((arm_sve_vector_bits(__ARM_FEATURE_SVE_BITS)));
 
 union vec_f_union
 {
@@ -156,33 +157,129 @@ static inline vec_d vec_blend_d(const vec_d a, const vec_d b, const vec_cmp_d ma
 static inline float  vec_reduce_add_s(const vec_f a) { return svaddv_f32(PTRUE32B, a); }
 static inline double vec_reduce_add_d(const vec_d a) { return svaddv_f64(PTRUE64B, a); }
 
-static inline vec_f vec_arsqrt_s(const vec_f r2)
+static inline vec_f vec_arsqrt_s(const vec_f a)
 {
     vec_f zero  = vec_zero_s();
-    vec_f rsqrt = svrsqrte_f32(r2);
-    vec_cmp_f cmp0 = vec_cmp_eq_s(r2, zero);
-    return svsel_f32(cmp0, zero, rsqrt);
+    vec_f rsqrt = svrsqrte_f32(a);
+    vec_cmp_f cmp0 = vec_cmp_eq_s(a, zero);
+    return vec_blend_s(rsqrt, zero, cmp0);
 }
-static inline vec_d vec_arsqrt_d(const vec_d r2)
+static inline vec_d vec_arsqrt_d(const vec_d a)
 { 
     vec_d zero  = vec_zero_d();
-    vec_d rsqrt = svrsqrte_f64(r2);
-    vec_cmp_d cmp0 = vec_cmp_eq_d(r2, zero);
-    return svsel_f64(cmp0, zero, rsqrt);
+    vec_d rsqrt = svrsqrte_f64(a);
+    vec_cmp_d cmp0 = vec_cmp_eq_d(a, zero);
+    return vec_blend_d(rsqrt, zero, cmp0);
 }
 
+#ifdef USE_SLEEF
 // TODO: add log, exp, pow, sin, cos, erf functions
+#else
+static inline vec_f vec_log_s(vec_f x)
+{
+    int i;
+    union vec_f_union u = {x}, res;
+    for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = logf(u.f[i]);
+    return res.v;
+}
+static inline vec_d vec_log_d(vec_d x)
+{
+    int i;
+    union vec_d_union u = {x}, res;
+    for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = log(u.d[i]);
+    return res.v;
+}
+
+static inline vec_f vec_exp_s(vec_f x)
+{
+    int i;
+    union vec_f_union u = {x}, res;
+    for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = expf(u.f[i]);
+    return res.v;
+}
+static inline vec_d vec_exp_d(vec_d x)
+{
+    int i;
+    union vec_d_union u = {x}, res;
+    for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = exp(u.d[i]);
+    return res.v;
+}
+
+static inline vec_f vec_pow_s(vec_f a, vec_f b)
+{
+    int i;
+    union vec_f_union ua = {a}, ub = {b}, res;
+    for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = powf(ua.f[i], ub.f[i]);
+    return res.v;
+}
+static inline vec_d vec_pow_d(vec_d a, vec_d b)
+{
+    int i;
+    union vec_d_union ua = {a}, ub = {b}, res;
+    for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = pow(ua.d[i], ub.d[i]);
+    return res.v;
+}
+
+static inline vec_f vec_sin_s(vec_f a)
+{
+    int i;
+    union vec_f_union ua = {a}, res;
+    for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = sinf(ua.f[i]);
+    return res.v;
+}
+static inline vec_d vec_sin_d(vec_d a)
+{
+    int i;
+    union vec_d_union ua = {a}, res;
+    for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = sin(ua.d[i]);
+    return res.v;
+}
+
+static inline vec_f vec_cos_s(vec_f a)
+{
+    int i;
+    union vec_f_union ua = {a}, res;
+    for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = cosf(ua.f[i]);
+    return res.v;
+}
+static inline vec_d vec_cos_d(vec_d a)
+{
+    int i;
+    union vec_d_union ua = {a}, res;
+    for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = cos(ua.d[i]);
+    return res.v;
+}
+
+static inline vec_f vec_erf_s(vec_f a)
+{
+    int i;
+    union vec_f_union ua = {a}, res;
+    for (i = 0; i < SIMD_LEN_S; i++) res.f[i] = erff(ua.f[i]);
+    return res.v;
+}
+static inline vec_d vec_erf_d(vec_d a)
+{
+    int i;
+    union vec_d_union ua = {a}, res;
+    for (i = 0; i < SIMD_LEN_D; i++) res.d[i] = erf(ua.d[i]);
+    return res.v;
+}
+
+static inline vec_f vec_log2_s (const vec_f a) { return vec_div_s(vec_log_s(a), vec_set1_s(M_LN2));  }
+static inline vec_d vec_log2_d (const vec_d a) { return vec_div_d(vec_log_d(a), vec_set1_d(M_LN2));  }
+
+static inline vec_f vec_log10_s(const vec_f a) { return vec_div_s(vec_log_s(a), vec_set1_s(M_LN10)); }
+static inline vec_d vec_log10_d(const vec_d a) { return vec_div_d(vec_log_d(a), vec_set1_d(M_LN10)); }
+
+static inline vec_f vec_exp2_s (const vec_f a) { return vec_exp_s(vec_mul_s(a, vec_set1_s(M_LN2)));  }
+static inline vec_d vec_exp2_d (const vec_d a) { return vec_exp_d(vec_mul_d(a, vec_set1_d(M_LN2)));  }
+
+static inline vec_f vec_exp10_s(const vec_f a) { return vec_exp_s(vec_mul_s(a, vec_set1_s(M_LN10))); }
+static inline vec_d vec_exp10_d(const vec_d a) { return vec_exp_d(vec_mul_d(a, vec_set1_d(M_LN10))); }
+#endif  // End of "#ifdef USE_SLEEF"
 
 static inline vec_f vec_frsqrt_pf_s() { return vec_set1_s(1); }
 static inline vec_d vec_frsqrt_pf_d() { return vec_set1_d(1); }
-
-#define RSQRT_REFINE_F64(pg, rsqrt_target, rsqrt_iter, rsqrt_work)  \
-    do  \
-    {   \
-        rsqrt_work = svmul_f64_z(pg, rsqrt_target, rsqrt_iter); \
-        rsqrt_work = svrsqrts_f64(rsqrt_work, rsqrt_iter);      \
-        rsqrt_iter = svmul_f64_z(pg, rsqrt_work, rsqrt_iter);   \
-    } while (0)
 
 #define RSQRT_REFINE_F32(pg, rsqrt_target, rsqrt_iter, rsqrt_work)  \
     do  \
@@ -192,33 +289,41 @@ static inline vec_d vec_frsqrt_pf_d() { return vec_set1_d(1); }
         rsqrt_iter = svmul_f32_z(pg, rsqrt_work, rsqrt_iter);   \
     } while (0)
 
-static inline vec_f vec_frsqrt_s(const vec_f r2)
+#define RSQRT_REFINE_F64(pg, rsqrt_target, rsqrt_iter, rsqrt_work)  \
+    do  \
+    {   \
+        rsqrt_work = svmul_f64_z(pg, rsqrt_target, rsqrt_iter); \
+        rsqrt_work = svrsqrts_f64(rsqrt_work, rsqrt_iter);      \
+        rsqrt_iter = svmul_f64_z(pg, rsqrt_work, rsqrt_iter);   \
+    } while (0)
+
+static inline vec_f vec_frsqrt_s(const vec_f a)
 {
-    vec_f rsqrt = vec_arsqrt_s(r2);
+    vec_f rsqrt = vec_arsqrt_s(a);
     vec_f rsqrt_work;
     #if NEWTON_ITER >= 1
-    RSQRT_REFINE_F32(PTRUE32B, r2, rsqrt, rsqrt_work);
+    RSQRT_REFINE_F32(PTRUE32B, a, rsqrt, rsqrt_work);
     #endif
     #if NEWTON_ITER >= 2
-    RSQRT_REFINE_F32(PTRUE32B, r2, rsqrt, rsqrt_work);
+    RSQRT_REFINE_F32(PTRUE32B, a, rsqrt, rsqrt_work);
     #endif
     #if NEWTON_ITER >= 3
-    RSQRT_REFINE_F32(PTRUE32B, r2, rsqrt, rsqrt_work);
+    RSQRT_REFINE_F32(PTRUE32B, a, rsqrt, rsqrt_work);
     #endif
     return rsqrt;
 }
-static inline vec_d vec_frsqrt_d(const vec_d r2)
+static inline vec_d vec_frsqrt_d(const vec_d a)
 {
-    vec_d rsqrt = vec_arsqrt_d(r2);
+    vec_d rsqrt = vec_arsqrt_d(a);
     vec_d rsqrt_work;
     #if NEWTON_ITER >= 1
-    RSQRT_REFINE_F64(PTRUE64B, r2, rsqrt, rsqrt_work);
+    RSQRT_REFINE_F64(PTRUE64B, a, rsqrt, rsqrt_work);
     #endif
     #if NEWTON_ITER >= 2
-    RSQRT_REFINE_F64(PTRUE64B, r2, rsqrt, rsqrt_work);
+    RSQRT_REFINE_F64(PTRUE64B, a, rsqrt, rsqrt_work);
     #endif
     #if NEWTON_ITER >= 3
-    RSQRT_REFINE_F64(PTRUE64B, r2, rsqrt, rsqrt_work);
+    RSQRT_REFINE_F64(PTRUE64B, a, rsqrt, rsqrt_work);
     #endif
     return rsqrt;
 }

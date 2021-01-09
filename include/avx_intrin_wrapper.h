@@ -171,17 +171,17 @@ static inline double vec_reduce_add_d(const vec_d a)
     return  _mm_cvtsd_f64(_mm_add_sd(lo, hi64));
 }
 
-static inline vec_f vec_arsqrt_s(const vec_f r2)
+static inline vec_f vec_arsqrt_s(const vec_f a)
 {
-    vec_f rsqrt = _mm256_rsqrt_ps(r2);
-    vec_f cmp0  = _mm256_cmp_ps(r2, vec_zero_s(), _CMP_EQ_OS);
+    vec_f rsqrt = _mm256_rsqrt_ps(a);
+    vec_f cmp0  = _mm256_cmp_ps(a, vec_zero_s(), _CMP_EQ_OS);
     return _mm256_andnot_ps(cmp0, rsqrt);
 }
-static inline vec_d vec_arsqrt_d(const vec_d r2)
+static inline vec_d vec_arsqrt_d(const vec_d a)
 { 
-    __m128 r2_s    = _mm256_cvtpd_ps(r2);
-    __m128 rsqrt_s = _mm_rsqrt_ps(r2_s);
-    __m128 cmp0    = _mm_cmpeq_ps(r2_s, _mm_setzero_ps());
+    __m128 a_s     = _mm256_cvtpd_ps(a);
+    __m128 rsqrt_s = _mm_rsqrt_ps(a_s);
+    __m128 cmp0    = _mm_cmpeq_ps(a_s, _mm_setzero_ps());
     __m128 ret_s   = _mm_andnot_ps(cmp0, rsqrt_s);
     return _mm256_cvtps_pd(ret_s); 
 }
@@ -247,7 +247,7 @@ static inline vec_d vec_cos_d  (const vec_d a) { return _ZGVdN4v_cos (a);   }
 
 #else   // Else of "#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 22"
 
-#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use emulated implementations. 
+#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use for-loop implementations. 
 static inline vec_f vec_log_s(vec_f x)
 {
     int i;
@@ -449,33 +449,33 @@ static inline float  vec_reduce_add_s(const vec_f a) { return _mm512_reduce_add_
 static inline double vec_reduce_add_d(const vec_d a) { return _mm512_reduce_add_pd(a); }
 
 #ifdef __AVX512ER__
-static inline vec_f vec_arsqrt_s(const vec_f r2)
+static inline vec_f vec_arsqrt_s(const vec_f a)
 {
     vec_fzero  = vec_zero_s();
-    vec_frsqrt = _mm512_rsqrt28_ps(r2);
-    vec_cmp_f cmp0 = _mm512_cmp_ps_mask(r2, zero, _CMP_EQ_OS);
+    vec_frsqrt = _mm512_rsqrt28_ps(a);
+    vec_cmp_f cmp0 = _mm512_cmp_ps_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_ps(rsqrt, cmp0, zero);
 }
-static inline vec_d vec_arsqrt_d(const vec_d r2)
+static inline vec_d vec_arsqrt_d(const vec_d a)
 { 
     vec_d zero  = vec_zero_d();
-    vec_d rsqrt = _mm512_rsqrt28_pd(r2);
-    vec_cmp_dcmp0 = _mm512_cmp_pd_mask(r2, zero, _CMP_EQ_OS);
+    vec_d rsqrt = _mm512_rsqrt28_pd(a);
+    vec_cmp_dcmp0 = _mm512_cmp_pd_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_pd(rsqrt, cmp0, zero);
 }
 #else   // Else of "#ifdef __AVX512ER__"
-static inline vec_f vec_arsqrt_s(const vec_f r2)
+static inline vec_f vec_arsqrt_s(const vec_f a)
 {
     vec_fzero  = vec_zero_s();
-    vec_frsqrt = _mm512_rsqrt14_ps(r2);
-    vec_cmp_f cmp0 = _mm512_cmp_ps_mask(r2, zero, _CMP_EQ_OS);
+    vec_frsqrt = _mm512_rsqrt14_ps(a);
+    vec_cmp_f cmp0 = _mm512_cmp_ps_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_ps(rsqrt, cmp0, zero);
 }
-static inline vec_d vec_arsqrt_d(const vec_d r2)
+static inline vec_d vec_arsqrt_d(const vec_d a)
 { 
     vec_d zero  = vec_zero_d();
-    vec_d rsqrt = _mm512_rsqrt14_pd(r2);
-    vec_cmp_dcmp0 = _mm512_cmp_pd_mask(r2, zero, _CMP_EQ_OS);
+    vec_d rsqrt = _mm512_rsqrt14_pd(a);
+    vec_cmp_dcmp0 = _mm512_cmp_pd_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_pd(rsqrt, cmp0, zero);
 }
 #endif  // End of "#ifdef __AVX512ER__"
@@ -541,7 +541,7 @@ static inline vec_d vec_cos_d  (const vec_d a) { return _ZGVdN8v_cos (a);   }
 
 #else   // Else of "#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 22"
 
-#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use emulated implementations. 
+#warning Your compiler or GLIBC does not support vectorized log(), pow(), and exp(), avx_intrin_wrapper.h will use for-loop implementations. 
 static inline vec_f vec_log_s(vec_f x)
 {
     int i;
@@ -653,20 +653,20 @@ static inline vec_f vec_exp10_s(const vec_f a) { return vec_exp_s(vec_mul_s(a, v
 static inline vec_d vec_exp10_d(const vec_d a) { return vec_exp_d(vec_mul_d(a, vec_set1_d(M_LN10))); }
 #endif  // End of #ifdef __INTEL_COMPILER
 
-// Newton iteration step for reverse square root, rsqrt' = 0.5 * rsqrt * (C - r2 * rsqrt^2),
+// Newton iteration step for reverse square root, rsqrt' = 0.5 * rsqrt * (C - a * rsqrt^2),
 // 0.5 is ignored here and need to be adjusted outside. 
-static inline vec_f vec_rsqrt_ntit_s(const vec_f r2, vec_f rsqrt, const float  C_)
+static inline vec_f vec_rsqrt_ntit_s(const vec_f a, vec_f rsqrt, const float  C_)
 {
     vec_f C  = vec_set1_s(C_);
     vec_f t1 = vec_mul_s(rsqrt, rsqrt);
-    vec_f t2 = vec_fnmadd_s(r2, t1, C);
+    vec_f t2 = vec_fnmadd_s(a, t1, C);
     return vec_mul_s(rsqrt, t2);
 }
-static inline vec_d vec_rsqrt_ntit_d(const vec_d r2, vec_d rsqrt, const double C_)
+static inline vec_d vec_rsqrt_ntit_d(const vec_d a, vec_d rsqrt, const double C_)
 {
     vec_d C  = vec_set1_d(C_);
     vec_d t1 = vec_mul_d(rsqrt, rsqrt);
-    vec_d t2 = vec_fnmadd_d(r2, t1, C);
+    vec_d t2 = vec_fnmadd_d(a, t1, C);
     return vec_mul_d(rsqrt, t2);
 }
 
@@ -687,31 +687,31 @@ static inline vec_d vec_frsqrt_pf_d()
     return vec_set1_d(newton_pf);
 }
 
-static inline vec_f vec_frsqrt_s(const vec_f r2)
+static inline vec_f vec_frsqrt_s(const vec_f a)
 {
-    vec_f rsqrt = vec_arsqrt_s(r2);
+    vec_f rsqrt = vec_arsqrt_s(a);
     #if NEWTON_ITER >= 1
-    rsqrt = vec_rsqrt_ntit_s(r2, rsqrt, 3);
+    rsqrt = vec_rsqrt_ntit_s(a, rsqrt, 3);
     #endif
     #if NEWTON_ITER >= 2
-    rsqrt = vec_rsqrt_ntit_s(r2, rsqrt, 12);
+    rsqrt = vec_rsqrt_ntit_s(a, rsqrt, 12);
     #endif
     #if NEWTON_ITER >= 3
-    rsqrt = vec_rsqrt_ntit_s(r2, rsqrt, 768);
+    rsqrt = vec_rsqrt_ntit_s(a, rsqrt, 768);
     #endif
     return rsqrt;
 }
-static inline vec_d vec_frsqrt_d(const vec_d r2)
+static inline vec_d vec_frsqrt_d(const vec_d a)
 {
-    vec_d rsqrt = vec_arsqrt_d(r2);
+    vec_d rsqrt = vec_arsqrt_d(a);
     #if NEWTON_ITER >= 1
-    rsqrt = vec_rsqrt_ntit_d(r2, rsqrt, 3);
+    rsqrt = vec_rsqrt_ntit_d(a, rsqrt, 3);
     #endif
     #if NEWTON_ITER >= 2
-    rsqrt = vec_rsqrt_ntit_d(r2, rsqrt, 12);
+    rsqrt = vec_rsqrt_ntit_d(a, rsqrt, 12);
     #endif
     #if NEWTON_ITER >= 3
-    rsqrt = vec_rsqrt_ntit_d(r2, rsqrt, 768);
+    rsqrt = vec_rsqrt_ntit_d(a, rsqrt, 768);
     #endif
     return rsqrt;
 }

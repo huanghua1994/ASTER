@@ -207,7 +207,7 @@ static inline vec_d vec_erf_d  (vec_d a) { return Sleef_erfdx_u10sve(a);   }
 
 #else  // Else of "#ifdef USE_SLEEF"
 
-#warning SLEEF library not presented, neon_intrin_wrapper.h will use for-loop implementations.
+#warning SLEEF library not presented, sve_intrin_wrapper.h will use for-loop implementations.
 static inline vec_f vec_log_s(vec_f a)
 {
     int i;

@@ -451,8 +451,8 @@ static inline double vec_reduce_add_d(const vec_d a) { return _mm512_reduce_add_
 #ifdef __AVX512ER__
 static inline vec_f vec_arsqrt_s(const vec_f a)
 {
-    vec_fzero  = vec_zero_s();
-    vec_frsqrt = _mm512_rsqrt28_ps(a);
+    vec_f zero  = vec_zero_s();
+    vec_f rsqrt = _mm512_rsqrt28_ps(a);
     vec_cmp_f cmp0 = _mm512_cmp_ps_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_ps(rsqrt, cmp0, zero);
 }
@@ -460,14 +460,14 @@ static inline vec_d vec_arsqrt_d(const vec_d a)
 { 
     vec_d zero  = vec_zero_d();
     vec_d rsqrt = _mm512_rsqrt28_pd(a);
-    vec_cmp_dcmp0 = _mm512_cmp_pd_mask(a, zero, _CMP_EQ_OS);
+    vec_cmp_d cmp0 = _mm512_cmp_pd_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_pd(rsqrt, cmp0, zero);
 }
 #else   // Else of "#ifdef __AVX512ER__"
 static inline vec_f vec_arsqrt_s(const vec_f a)
 {
-    vec_fzero  = vec_zero_s();
-    vec_frsqrt = _mm512_rsqrt14_ps(a);
+    vec_f zero  = vec_zero_s();
+    vec_f rsqrt = _mm512_rsqrt14_ps(a);
     vec_cmp_f cmp0 = _mm512_cmp_ps_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_ps(rsqrt, cmp0, zero);
 }
@@ -475,7 +475,7 @@ static inline vec_d vec_arsqrt_d(const vec_d a)
 { 
     vec_d zero  = vec_zero_d();
     vec_d rsqrt = _mm512_rsqrt14_pd(a);
-    vec_cmp_dcmp0 = _mm512_cmp_pd_mask(a, zero, _CMP_EQ_OS);
+    vec_cmp_d cmp0 = _mm512_cmp_pd_mask(a, zero, _CMP_EQ_OS);
     return _mm512_mask_mov_pd(rsqrt, cmp0, zero);
 }
 #endif  // End of "#ifdef __AVX512ER__"

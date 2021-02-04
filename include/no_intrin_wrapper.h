@@ -22,7 +22,7 @@ struct vec16f
 {
     float f[SIMD_LEN_S];
 } __attribute__ ((aligned(64)));
-typedef struct vec16f vec_f;
+typedef struct vec16f vec_s;
 
 struct vec8d
 {
@@ -34,7 +34,7 @@ struct vec16i
 {
     int i[SIMD_LEN_S];
 } __attribute__ ((aligned(64)));
-typedef struct vec16i vec_cmp_f;
+typedef struct vec16i vec_cmp_s;
 
 struct vec8i
 {
@@ -42,9 +42,9 @@ struct vec8i
 } __attribute__ ((aligned(64)));
 typedef struct vec8i vec_cmp_d;
 
-static inline vec_f vec_zero_s()
+static inline vec_s vec_zero_s()
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = 0.0;
     return res;
@@ -57,9 +57,9 @@ static inline vec_d vec_zero_d()
     return res;
 }
 
-static inline vec_f vec_set1_s(const float  a)
+static inline vec_s vec_set1_s(const float  a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a;
     return res;
@@ -72,9 +72,9 @@ static inline vec_d vec_set1_d(const double a)
     return res;
 }
 
-static inline vec_f vec_bcast_s(float  const *a)
+static inline vec_s vec_bcast_s(float  const *a)
 {
-    vec_f res;
+    vec_s res;
     float a0 = a[0];
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a0;
@@ -89,9 +89,9 @@ static inline vec_d vec_bcast_d(double const *a)
     return res;
 }
 
-static inline vec_f vec_load_s (float  const *a)
+static inline vec_s vec_load_s (float  const *a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a[i];
     return res;
@@ -104,10 +104,10 @@ static inline vec_d vec_load_d (double const *a)
     return res;
 }
 
-static inline vec_f vec_loadu_s(float  const *a)  { return vec_load_s(a); }
+static inline vec_s vec_loadu_s(float  const *a)  { return vec_load_s(a); }
 static inline vec_d vec_loadu_d(double const *a)  { return vec_load_d(a); }
 
-static inline void vec_store_s (float  *a, const vec_f b)
+static inline void vec_store_s (float  *a, const vec_s b)
 {
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) a[i] = b.f[i];
@@ -118,12 +118,12 @@ static inline void vec_store_d (double *a, const vec_d b)
     for (int i = 0; i < SIMD_LEN_D; i++) a[i] = b.d[i];
 }
 
-static inline void vec_storeu_s(float  *a, const vec_f b) { vec_store_s(a, b); }
+static inline void vec_storeu_s(float  *a, const vec_s b) { vec_store_s(a, b); }
 static inline void vec_storeu_d(double *a, const vec_d b) { vec_store_d(a, b); }
 
-static inline vec_f vec_add_s(const vec_f a, const vec_f b)
+static inline vec_s vec_add_s(const vec_s a, const vec_s b)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a.f[i] + b.f[i];
     return res;
@@ -136,9 +136,9 @@ static inline vec_d vec_add_d(const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_f vec_sub_s(const vec_f a, const vec_f b)
+static inline vec_s vec_sub_s(const vec_s a, const vec_s b)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a.f[i] - b.f[i];
     return res;
@@ -151,9 +151,9 @@ static inline vec_d vec_sub_d(const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_f vec_mul_s(const vec_f a, const vec_f b)
+static inline vec_s vec_mul_s(const vec_s a, const vec_s b)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a.f[i] * b.f[i];
     return res;
@@ -166,9 +166,9 @@ static inline vec_d vec_mul_d(const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_f vec_div_s(const vec_f a, const vec_f b)
+static inline vec_s vec_div_s(const vec_s a, const vec_s b)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a.f[i] / b.f[i];
     return res;
@@ -181,9 +181,9 @@ static inline vec_d vec_div_d(const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_f vec_abs_s(const vec_f a)
+static inline vec_s vec_abs_s(const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = fabsf(a.f[i]);
     return res;
@@ -196,9 +196,9 @@ static inline vec_d vec_abs_d(const vec_d a)
     return res;
 }
 
-static inline vec_f vec_sqrt_s(const vec_f a)
+static inline vec_s vec_sqrt_s(const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = sqrtf(a.f[i]);
     return res;
@@ -211,9 +211,9 @@ static inline vec_d vec_sqrt_d(const vec_d a)
     return res;
 }
 
-static inline vec_f vec_fmadd_s(const vec_f a, const vec_f b, const vec_f c)
+static inline vec_s vec_fmadd_s(const vec_s a, const vec_s b, const vec_s c)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a.f[i] * b.f[i] + c.f[i];
     return res;
@@ -226,9 +226,9 @@ static inline vec_d vec_fmadd_d(const vec_d a, const vec_d b, const vec_d c)
     return res;
 }
 
-static inline vec_f vec_fnmadd_s(const vec_f a, const vec_f b, const vec_f c)
+static inline vec_s vec_fnmadd_s(const vec_s a, const vec_s b, const vec_s c)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = -(a.f[i] * b.f[i]) + c.f[i];
     return res;
@@ -241,9 +241,9 @@ static inline vec_d vec_fnmadd_d(const vec_d a, const vec_d b, const vec_d c)
     return res;
 }
 
-static inline vec_f vec_fmsub_s (const vec_f a, const vec_f b, const vec_f c)
+static inline vec_s vec_fmsub_s (const vec_s a, const vec_s b, const vec_s c)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = a.f[i] * b.f[i] - c.f[i];
     return res;
@@ -256,9 +256,9 @@ static inline vec_d vec_fmsub_d (const vec_d a, const vec_d b, const vec_d c)
     return res;
 }
 
-static inline vec_f vec_max_s(const vec_f a, const vec_f b)
+static inline vec_s vec_max_s(const vec_s a, const vec_s b)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = (a.f[i] > b.f[i]) ? a.f[i] : b.f[i];
     return res;
@@ -271,9 +271,9 @@ static inline vec_d vec_max_d(const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_f vec_min_s(const vec_f a, const vec_f b)
+static inline vec_s vec_min_s(const vec_s a, const vec_s b)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = (a.f[i] < b.f[i]) ? a.f[i] : b.f[i];
     return res;
@@ -286,9 +286,9 @@ static inline vec_d vec_min_d(const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_cmp_f vec_cmp_eq_s (const vec_f a, const vec_f b)
+static inline vec_cmp_s vec_cmp_eq_s (const vec_s a, const vec_s b)
 {
-    vec_cmp_f res;
+    vec_cmp_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.i[i] = (a.f[i] == b.f[i]);
     return res;
@@ -301,9 +301,9 @@ static inline vec_cmp_d vec_cmp_eq_d (const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_cmp_f vec_cmp_neq_s(const vec_f a, const vec_f b)
+static inline vec_cmp_s vec_cmp_neq_s(const vec_s a, const vec_s b)
 {
-    vec_cmp_f res;
+    vec_cmp_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.i[i] = (a.f[i] != b.f[i]);
     return res;
@@ -316,9 +316,9 @@ static inline vec_cmp_d vec_cmp_neq_d(const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_cmp_f vec_cmp_lt_s (const vec_f a, const vec_f b)
+static inline vec_cmp_s vec_cmp_lt_s (const vec_s a, const vec_s b)
 {
-    vec_cmp_f res;
+    vec_cmp_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.i[i] = (a.f[i] < b.f[i]);
     return res;
@@ -331,9 +331,9 @@ static inline vec_cmp_d vec_cmp_lt_d (const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_cmp_f vec_cmp_le_s (const vec_f a, const vec_f b)
+static inline vec_cmp_s vec_cmp_le_s (const vec_s a, const vec_s b)
 {
-    vec_cmp_f res;
+    vec_cmp_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.i[i] = (a.f[i] <= b.f[i]);
     return res;
@@ -346,9 +346,9 @@ static inline vec_cmp_d vec_cmp_le_d (const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_cmp_f vec_cmp_gt_s (const vec_f a, const vec_f b)
+static inline vec_cmp_s vec_cmp_gt_s (const vec_s a, const vec_s b)
 {
-    vec_cmp_f res;
+    vec_cmp_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.i[i] = (a.f[i] > b.f[i]);
     return res;
@@ -361,9 +361,9 @@ static inline vec_cmp_d vec_cmp_gt_d (const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_cmp_f vec_cmp_ge_s (const vec_f a, const vec_f b)
+static inline vec_cmp_s vec_cmp_ge_s (const vec_s a, const vec_s b)
 {
-    vec_cmp_f res;
+    vec_cmp_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.i[i] = (a.f[i] >= b.f[i]);
     return res;
@@ -376,9 +376,9 @@ static inline vec_cmp_d vec_cmp_ge_d (const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_f vec_blend_s(const vec_f a, const vec_f b, const vec_cmp_f mask)
+static inline vec_s vec_blend_s(const vec_s a, const vec_s b, const vec_cmp_s mask)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = (mask.i[i]) ? b.f[i] : a.f[i];
     return res;
@@ -391,7 +391,7 @@ static inline vec_d vec_blend_d(const vec_d a, const vec_d b, const vec_cmp_d ma
     return res;
 }
 
-static inline float  vec_reduce_add_s(const vec_f a)
+static inline float  vec_reduce_add_s(const vec_s a)
 {
     float res = 0.0;
     #pragma omp simd reduction(+:res)
@@ -406,9 +406,9 @@ static inline double vec_reduce_add_d(const vec_d a)
     return res;
 }
 
-static inline vec_f vec_log_s  (const vec_f a)
+static inline vec_s vec_log_s  (const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = logf(a.f[i]);
     return res;
@@ -421,9 +421,9 @@ static inline vec_d vec_log_d  (const vec_d a)
     return res;
 }
 
-static inline vec_f vec_log2_s (const vec_f a)
+static inline vec_s vec_log2_s (const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = log2f(a.f[i]);
     return res;
@@ -436,9 +436,9 @@ static inline vec_d vec_log2_d (const vec_d a)
     return res;
 }
 
-static inline vec_f vec_log10_s(const vec_f a)
+static inline vec_s vec_log10_s(const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = log10f(a.f[i]);
     return res;
@@ -451,9 +451,9 @@ static inline vec_d vec_log10_d(const vec_d a)
     return res;
 }
 
-static inline vec_f vec_exp_s  (const vec_f a)
+static inline vec_s vec_exp_s  (const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = expf(a.f[i]);
     return res;
@@ -466,9 +466,9 @@ static inline vec_d vec_exp_d  (const vec_d a)
     return res;
 }
 
-static inline vec_f vec_exp2_s (const vec_f a)
+static inline vec_s vec_exp2_s (const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = exp2f(a.f[i]);
     return res;
@@ -481,12 +481,12 @@ static inline vec_d vec_exp2_d (const vec_d a)
     return res;
 }
 
-static inline vec_f vec_exp10_s(const vec_f a) { return vec_exp_s(vec_mul_s(a, vec_set1_s(M_LN10))); }
+static inline vec_s vec_exp10_s(const vec_s a) { return vec_exp_s(vec_mul_s(a, vec_set1_s(M_LN10))); }
 static inline vec_d vec_exp10_d(const vec_d a) { return vec_exp_d(vec_mul_d(a, vec_set1_d(M_LN10))); }
 
-static inline vec_f vec_pow_s  (const vec_f a, const vec_f b)
+static inline vec_s vec_pow_s  (const vec_s a, const vec_s b)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) res.f[i] = powf(a.f[i], b.f[i]);
     return res;
@@ -499,9 +499,9 @@ static inline vec_d vec_pow_d  (const vec_d a, const vec_d b)
     return res;
 }
 
-static inline vec_f vec_sin_s  (const vec_f a)
+static inline vec_s vec_sin_s  (const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_D; i++) res.f[i] = sinf(a.f[i]);
     return res;
@@ -514,9 +514,9 @@ static inline vec_d vec_sin_d  (const vec_d a)
     return res;
 }
 
-static inline vec_f vec_cos_s  (const vec_f a)
+static inline vec_s vec_cos_s  (const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_D; i++) res.f[i] = cosf(a.f[i]);
     return res;
@@ -529,9 +529,9 @@ static inline vec_d vec_cos_d  (const vec_d a)
     return res;
 }
 
-static inline vec_f vec_erf_s  (const vec_f a)
+static inline vec_s vec_erf_s  (const vec_s a)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_D; i++) res.f[i] = erff(a.f[i]);
     return res;
@@ -551,9 +551,9 @@ static inline vec_d vec_erf_d  (const vec_d a)
 #endif
 
 #ifdef USE_FAST_RSQRT
-static inline vec_f vec_arsqrt_s(const vec_f r2)
+static inline vec_s vec_arsqrt_s(const vec_s r2)
 {
-    vec_f res;
+    vec_s res;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++)
     {
@@ -590,11 +590,11 @@ static inline vec_d vec_arsqrt_d(const vec_d r2)
 
 // Newton iteration step for reverse square root, rsqrt' = 0.5 * rsqrt * (C - r2 * rsqrt^2),
 // 0.5 is ignored here and need to be adjusted outside. 
-static inline vec_f vec_rsqrt_ntit_s(const vec_f r2, vec_f rsqrt, const float  C_)
+static inline vec_s vec_rsqrt_ntit_s(const vec_s r2, vec_s rsqrt, const float  C_)
 {
-    vec_f C  = vec_set1_s(C_);
-    vec_f t1 = vec_mul_s(rsqrt, rsqrt);
-    vec_f t2 = vec_fnmadd_s(r2, t1, C);
+    vec_s C  = vec_set1_s(C_);
+    vec_s t1 = vec_mul_s(rsqrt, rsqrt);
+    vec_s t2 = vec_fnmadd_s(r2, t1, C);
     return vec_mul_s(rsqrt, t2);
 }
 static inline vec_d vec_rsqrt_ntit_d(const vec_d r2, vec_d rsqrt, const double C_)
@@ -606,7 +606,7 @@ static inline vec_d vec_rsqrt_ntit_d(const vec_d r2, vec_d rsqrt, const double C
 }
 #endif  // ifdef USE_FAST_RSQRT
 
-static inline vec_f vec_frsqrt_pf_s()
+static inline vec_s vec_frsqrt_pf_s()
 {
     #if defined(USE_FAST_RSQRT)
     float newton_pf = 1.0;
@@ -631,10 +631,10 @@ static inline vec_d vec_frsqrt_pf_d()
     #endif
 }
 
-static inline vec_f vec_frsqrt_s(const vec_f r2)
+static inline vec_s vec_frsqrt_s(const vec_s r2)
 {
     #if defined(USE_FAST_RSQRT)
-    vec_f rsqrt = vec_arsqrt_s(r2);
+    vec_s rsqrt = vec_arsqrt_s(r2);
     #if NEWTON_ITER >= 1
     rsqrt = vec_rsqrt_ntit_s(r2, rsqrt, 3);
     #endif
@@ -646,7 +646,7 @@ static inline vec_f vec_frsqrt_s(const vec_f r2)
     #endif
     return rsqrt;
     #else
-    vec_f rsqrt;
+    vec_s rsqrt;
     #pragma omp simd
     for (int i = 0; i < SIMD_LEN_S; i++) rsqrt.f[i] = (r2.f[i] == 0.0) ? 0.0 : (1.0 / sqrtf(r2.f[i]));
     #endif

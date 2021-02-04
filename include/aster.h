@@ -18,4 +18,6 @@
 #include "no_intrin_wrapper.h"
 #endif
 
+#include "dtype_wrapper.h"
+
 #endif

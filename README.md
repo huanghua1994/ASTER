@@ -9,14 +9,16 @@ ASTER is a C-header only library that provides a set APIs for frequently used SI
 
 Vector types:
 
-* `vec_f`: data vector for single-precision floating point numbers (float, fp32), each vector has `SIMD_LEN_S` lanes (elements)
+* `vec_s`: data vector for single-precision floating point numbers (float, fp32), each vector has `SIMD_LEN_S` lanes (elements)
 * `vec_d`: data vector for double-precision floating point numbers (double, fp64), each vector has `SIMD_LEN_D` lanes (elements)
-* `vec_cmp_f`: comparing & mask vector for `vec_f`
+* `vec_t`: if `ASTER_DTYPE_DOUBLE` / `ASTER_DTYPE_FLOAT` is defined before including `aster.h`, `vec_t` == `vec_d` / `vec_s`
+* `vec_cmp_s`: comparing & mask vector for `vec_s`
 * `vec_cmp_d`: comparing & mask vector for `vec_d`
+* `vec_cmp_t`: if `ASTER_DTYPE_DOUBLE` / `ASTER_DTYPE_FLOAT` is defined before including `aster.h`, `vec_cmp_t` == `vec_cmp_d` / `vec_cmp_s`
 
 
 
-Function naming: `vec_<operation>_<s/d>`, suffix `s` is for `vec_s` data type, `d` is for `vec_d` data type.
+Function naming: `vec_<operation>_<s/d/t>`, suffix `s` is for `vec_f` data type, `d` is for `vec_d` data type, `t` is for `vec_t` type.
 
 List of supported functions:
 

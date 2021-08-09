@@ -22,10 +22,9 @@ extern "C" {
 #error Your processor or compiler does not support NEON instruction set, cannot use this neon_intrin_wrapper.h
 #endif
 
-#define SIMD_LEN_S 4
-#define SIMD_LEN_D 2
 #define USE_NEON128
-
+#define SIMD_LEN_S  4
+#define SIMD_LEN_D  2
 #define vec_s       float32x4_t
 #define vec_d       float64x2_t
 #define vec_cmp_s   uint32x4_t

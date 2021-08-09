@@ -1,15 +1,27 @@
 #ifndef __ASTER_H__
 #define __ASTER_H__
 
-#if defined(__AVX__)
+#if defined(__AVX__) && !defined(__AVX512F__)
 #include "avx_intrin_wrapper.h"
+#endif
+
+#if defined(USE_AVX)
+#include "avx_intrin_wrapper.h"
+#endif
+
+#if defined(__AVX512F__) && !defined(USE_AVX)
+#include "avx512_intrin_wrapper.h"
 #endif
 
 #if defined(__ARM_NEON) && !defined(__ARM_FEATURE_SVE)
 #include "neon_intrin_wrapper.h"
 #endif
 
-#if defined(__ARM_FEATURE_SVE)
+#if defined(USE_ASIMD)
+#include "neon_intrin_wrapper.h"
+#endif
+
+#if defined(__ARM_FEATURE_SVE) && !defined(USE_ASIMD)
 #include "sve_intrin_wrapper.h"
 #endif
 

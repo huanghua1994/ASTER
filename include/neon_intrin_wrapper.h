@@ -135,42 +135,61 @@ static inline vec_d vec_arsqrt_d(const vec_d a)
     return vec_blend_d(rsqrt, zero, cmp0);
 }
 
-#ifdef USE_SLEEF
-#include "sleef.h"
+#if !defined(NEON_LOOP_VEC_MATH)
 
-static inline vec_s vec_log_s  (vec_s a) { return Sleef_logf4_u10advsimd(a);   }
-static inline vec_d vec_log_d  (vec_d a) { return Sleef_logd2_u10advsimd(a);   }
+vec_s _ZGVnN4v_logf(vec_s a);
+vec_d _ZGVnN2v_log (vec_d a);
+static inline vec_s vec_log_s  (vec_s a) { return _ZGVnN4v_logf(a);   }
+static inline vec_d vec_log_d  (vec_d a) { return _ZGVnN2v_log (a);   }
 
-static inline vec_s vec_log2_s (vec_s a) { return Sleef_log2f4_u10advsimd(a);  }
-static inline vec_d vec_log2_d (vec_d a) { return Sleef_log2d2_u10advsimd(a);  }
+vec_s _ZGVnN4v_log2f(vec_s a);
+vec_d _ZGVnN2v_log2 (vec_d a);
+static inline vec_s vec_log2_s (vec_s a) { return _ZGVnN4v_log2f(a);  }
+static inline vec_d vec_log2_d (vec_d a) { return _ZGVnN2v_log2 (a);  }
 
-static inline vec_s vec_log10_s(vec_s a) { return Sleef_log10f4_u10advsimd(a); }
-static inline vec_d vec_log10_d(vec_d a) { return Sleef_log10d2_u10advsimd(a); }
+vec_s _ZGVnN4v_log10f(vec_s a);
+vec_d _ZGVnN2v_log10 (vec_d a);
+static inline vec_s vec_log10_s(vec_s a) { return _ZGVnN4v_log10f(a); }
+static inline vec_d vec_log10_d(vec_d a) { return _ZGVnN2v_log10 (a); }
 
-static inline vec_s vec_exp_s  (vec_s a) { return Sleef_expf4_u10advsimd(a);   }
-static inline vec_d vec_exp_d  (vec_d a) { return Sleef_expd2_u10advsimd(a);   }
+vec_s _ZGVnN4v_expf(vec_s a);
+vec_d _ZGVnN2v_exp (vec_d a);
+static inline vec_s vec_exp_s  (vec_s a) { return _ZGVnN4v_expf(a);   }
+static inline vec_d vec_exp_d  (vec_d a) { return _ZGVnN2v_exp (a);   }
 
-static inline vec_s vec_exp2_s (vec_s a) { return Sleef_exp2f4_u10advsimd(a);  }
-static inline vec_d vec_exp2_d (vec_d a) { return Sleef_exp2d2_u10advsimd(a);  }
+vec_s _ZGVnN4v_exp2f(vec_s a);
+vec_d _ZGVnN2v_exp2 (vec_d a);
+static inline vec_s vec_exp2_s (vec_s a) { return _ZGVnN4v_exp2f(a);  }
+static inline vec_d vec_exp2_d (vec_d a) { return _ZGVnN2v_exp2 (a);  }
 
-static inline vec_s vec_exp10_s(vec_s a) { return Sleef_exp10f4_u10advsimd(a); }
-static inline vec_d vec_exp10_d(vec_d a) { return Sleef_exp10d2_u10advsimd(a); }
+vec_s _ZGVnN4v_exp10f(vec_s a);
+vec_d _ZGVnN2v_exp10 (vec_d a);
+static inline vec_s vec_exp10_s(vec_s a) { return _ZGVnN4v_exp10f(a); }
+static inline vec_d vec_exp10_d(vec_d a) { return _ZGVnN2v_exp10 (a); }
 
-static inline vec_s vec_pow_s  (vec_s a, vec_s b) { return Sleef_powf4_u10advsimd(a, b); }
-static inline vec_d vec_pow_d  (vec_d a, vec_d b) { return Sleef_powd2_u10advsimd(a, b); }
+vec_s _ZGVnN4v_powf(vec_s a, vec_s b);
+vec_d _ZGVnN2v_pow (vec_d a, vec_d b);
+static inline vec_s vec_pow_s  (vec_s a, vec_s b) { return _ZGVnN4v_powf(a, b); }
+static inline vec_d vec_pow_d  (vec_d a, vec_d b) { return _ZGVnN2v_pow (a, b); }
 
-static inline vec_s vec_sin_s  (vec_s a) { return Sleef_sinf4_u10advsimd(a);   }
-static inline vec_d vec_sin_d  (vec_d a) { return Sleef_sind2_u10advsimd(a);   }
+vec_s _ZGVnN4v_sinf(vec_s a);
+vec_d _ZGVnN2v_sin (vec_d a);
+static inline vec_s vec_sin_s  (vec_s a) { return _ZGVnN4v_sinf(a);   }
+static inline vec_d vec_sin_d  (vec_d a) { return _ZGVnN2v_sin (a);   }
 
-static inline vec_s vec_cos_s  (vec_s a) { return Sleef_cosf4_u10advsimd(a);   }
-static inline vec_d vec_cos_d  (vec_d a) { return Sleef_cosd2_u10advsimd(a);   }
+vec_s _ZGVnN4v_cosf(vec_s a);
+vec_d _ZGVnN2v_cos (vec_d a);
+static inline vec_s vec_cos_s  (vec_s a) { return _ZGVnN4v_cosf(a);   }
+static inline vec_d vec_cos_d  (vec_d a) { return _ZGVnN2v_cos (a);   }
 
-static inline vec_s vec_erf_s  (vec_s a) { return Sleef_erff4_u10advsimd(a);   }
-static inline vec_d vec_erf_d  (vec_d a) { return Sleef_erfd2_u10advsimd(a);   }
+vec_s _ZGVnN4v_erff(vec_s a);
+vec_d _ZGVnN2v_erf (vec_d a);
+static inline vec_s vec_erf_s  (vec_s a) { return _ZGVnN4v_erff(a);   }
+static inline vec_d vec_erf_d  (vec_d a) { return _ZGVnN2v_erf (a);   }
 
-#else  // Else of "#ifdef USE_SLEEF"
+#else  // Else of "#if !defined(NEON_LOOP_VEC_MATH)"
 
-#warning SLEEF library not presented, neon_intrin_wrapper.h will use for-loop implementations.
+#warning neon_intrin_wrapper.h is using for-loop implementations for math functions.
 static inline vec_s vec_log_s(vec_s a)
 {
     int i;
@@ -272,7 +291,7 @@ static inline vec_d vec_exp2_d (const vec_d a) { return vec_exp_d(vec_mul_d(a, v
 
 static inline vec_s vec_exp10_s(const vec_s a) { return vec_exp_s(vec_mul_s(a, vec_set1_s(M_LN10))); }
 static inline vec_d vec_exp10_d(const vec_d a) { return vec_exp_d(vec_mul_d(a, vec_set1_d(M_LN10))); }
-#endif  // End of "#ifdef USE_SLEEF"
+#endif  // End of "#if !defined(NEON_LOOP_VEC_MATH)"
 
 static inline vec_s vec_frsqrt_pf_s() { return vec_set1_s(1); }
 static inline vec_d vec_frsqrt_pf_d() { return vec_set1_d(1); }

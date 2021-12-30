@@ -58,9 +58,9 @@ vec_frsqrt_*(a)         : Return lane-wise fast reverse square root <a[i]> == 0 
 The following math functions do not have corresponding native CPU instructions, but they are implemented in 3rd party libraries:
 
 ```c
-vec_log_*(a)            : Return lane-wise natural logarithm ln(<a[i]>)
-vec_log2_*(a)           : Return lane-wise base-2  logarithm log2(<a[i]>)
-vec_log10_*(a)          : Return lane-wise base-10 logarithm log10(<a[i]>)
+vec_log_*(a)            : Return lane-wise ln(<a[i]>)
+vec_log2_*(a)           : Return lane-wise log2(<a[i]>)
+vec_log10_*(a)          : Return lane-wise log10(<a[i]>)
 vec_exp_*(a)            : Return lane-wise exp(<a[i]>)
 vec_exp2_*(a)           : Return lane-wise pow(2, <a[i]>)
 vec_exp10_*(a)          : Return lane-wise pow(10, <a[i]>)
@@ -71,7 +71,7 @@ vec_erf_*(a)            : Return lane-wise erf(<a[i]>)
 ```
 
 * On x86, ASTER uses Intel SVML library or GCC libmvec when available
-* On ARM, ASTER uses the [SLEEF](https://github.com/shibatch/sleef) library when available
+* On ARM, ASTER uses the ARM Performance Libraries (ARM PL) when available
 * If 3rd party library is not available, ASTER falls back to for-loop implementation
 
 
@@ -88,11 +88,5 @@ Tested platforms:
 | Intel Core i5-7300U      | AVX2            | macOS 10.15.4, x64     | GCC 9.2.0              |
 | AMD Threadripper 2950X   | AVX2            | WSL2 Ubuntu 20.04, x64 | GCC 9.3.0              |
 | Fujitsu A64FX            | SVE-512 & NEON  | CentOS 8.3, aarch64    | GCC 10.2.0             |
-
-
-
-Todo-list:
-
-* Add ARM clang compiler flags in `examples/aarch64-sve.make`
 
 

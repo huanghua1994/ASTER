@@ -172,42 +172,61 @@ static inline vec_d vec_arsqrt_d(const vec_d a)
     return vec_blend_d(rsqrt, zero, cmp0);
 }
 
-#ifdef USE_SLEEF
-#include "sleef.h"
+#if !defined(SVE_LOOP_VEC_MATH)
 
-static inline vec_s vec_log_s  (vec_s a) { return Sleef_logfx_u10sve(a);   }
-static inline vec_d vec_log_d  (vec_d a) { return Sleef_logdx_u10sve(a);   }
+vec_s _ZGVsNxv_logf(vec_s a);
+vec_d _ZGVsNxv_log (vec_d a);
+static inline vec_s vec_log_s  (vec_s a) { return _ZGVsNxv_logf(a);   }
+static inline vec_d vec_log_d  (vec_d a) { return _ZGVsNxv_log (a);   }
 
-static inline vec_s vec_log2_s (vec_s a) { return Sleef_log2fx_u10sve(a);  }
-static inline vec_d vec_log2_d (vec_d a) { return Sleef_log2dx_u10sve(a);  }
+vec_s _ZGVsNxv_log2f(vec_s a);
+vec_d _ZGVsNxv_log2 (vec_d a);
+static inline vec_s vec_log2_s (vec_s a) { return _ZGVsNxv_log2f(a);  }
+static inline vec_d vec_log2_d (vec_d a) { return _ZGVsNxv_log2 (a);  }
 
-static inline vec_s vec_log10_s(vec_s a) { return Sleef_log10fx_u10sve(a); }
-static inline vec_d vec_log10_d(vec_d a) { return Sleef_log10dx_u10sve(a); }
+vec_s _ZGVsNxv_log10f(vec_s a);
+vec_d _ZGVsNxv_log10 (vec_d a);
+static inline vec_s vec_log10_s(vec_s a) { return _ZGVsNxv_log10f(a); }
+static inline vec_d vec_log10_d(vec_d a) { return _ZGVsNxv_log10 (a); }
 
-static inline vec_s vec_exp_s  (vec_s a) { return Sleef_expfx_u10sve(a);   }
-static inline vec_d vec_exp_d  (vec_d a) { return Sleef_expdx_u10sve(a);   }
+vec_s _ZGVsNxv_expf(vec_s a);
+vec_d _ZGVsNxv_exp (vec_d a);
+static inline vec_s vec_exp_s  (vec_s a) { return _ZGVsNxv_expf(a);   }
+static inline vec_d vec_exp_d  (vec_d a) { return _ZGVsNxv_exp (a);   }
 
-static inline vec_s vec_exp2_s (vec_s a) { return Sleef_exp2fx_u10sve(a);  }
-static inline vec_d vec_exp2_d (vec_d a) { return Sleef_exp2dx_u10sve(a);  }
+vec_s _ZGVsNxv_exp2f(vec_s a);
+vec_d _ZGVsNxv_exp2 (vec_d a);
+static inline vec_s vec_exp2_s (vec_s a) { return _ZGVsNxv_exp2f(a);  }
+static inline vec_d vec_exp2_d (vec_d a) { return _ZGVsNxv_exp2 (a);  }
 
-static inline vec_s vec_exp10_s(vec_s a) { return Sleef_exp10fx_u10sve(a); }
-static inline vec_d vec_exp10_d(vec_d a) { return Sleef_exp10dx_u10sve(a); }
+vec_s _ZGVsNxv_exp10f(vec_s a);
+vec_d _ZGVsNxv_exp10 (vec_d a);
+static inline vec_s vec_exp10_s(vec_s a) { return _ZGVsNxv_exp10f(a); }
+static inline vec_d vec_exp10_d(vec_d a) { return _ZGVsNxv_exp10 (a); }
 
-static inline vec_s vec_pow_s  (vec_s a, vec_s b) { return Sleef_powfx_u10sve(a, b); }
-static inline vec_d vec_pow_d  (vec_d a, vec_d b) { return Sleef_powdx_u10sve(a, b); }
+vec_s _ZGVsNxv_powf(vec_s a, vec_s b);
+vec_d _ZGVsNxv_pow (vec_d a, vec_d b);
+static inline vec_s vec_pow_s  (vec_s a, vec_s b) { return _ZGVsNxv_powf(a, b); }
+static inline vec_d vec_pow_d  (vec_d a, vec_d b) { return _ZGVsNxv_pow (a, b); }
 
-static inline vec_s vec_sin_s  (vec_s a) { return Sleef_sinfx_u10sve(a);   }
-static inline vec_d vec_sin_d  (vec_d a) { return Sleef_sindx_u10sve(a);   }
+vec_s _ZGVsNxv_sinf(vec_s a);
+vec_d _ZGVsNxv_sin (vec_d a);
+static inline vec_s vec_sin_s  (vec_s a) { return _ZGVsNxv_sinf(a);   }
+static inline vec_d vec_sin_d  (vec_d a) { return _ZGVsNxv_sin (a);   }
 
-static inline vec_s vec_cos_s  (vec_s a) { return Sleef_cosfx_u10sve(a);   }
-static inline vec_d vec_cos_d  (vec_d a) { return Sleef_cosdx_u10sve(a);   }
+vec_s _ZGVsNxv_cosf(vec_s a);
+vec_d _ZGVsNxv_cos (vec_d a);
+static inline vec_s vec_cos_s  (vec_s a) { return _ZGVsNxv_cosf(a);   }
+static inline vec_d vec_cos_d  (vec_d a) { return _ZGVsNxv_cos (a);   }
 
-static inline vec_s vec_erf_s  (vec_s a) { return Sleef_erffx_u10sve(a);   }
-static inline vec_d vec_erf_d  (vec_d a) { return Sleef_erfdx_u10sve(a);   }
+vec_s _ZGVsNxv_erff(vec_s a);
+vec_d _ZGVsNxv_erf (vec_d a);
+static inline vec_s vec_erf_s  (vec_s a) { return _ZGVsNxv_erff(a);   }
+static inline vec_d vec_erf_d  (vec_d a) { return _ZGVsNxv_erf (a);   }
 
-#else  // Else of "#ifdef USE_SLEEF"
+#else  // Else of "#if !defined(SVE_LOOP_VEC_MATH)"
 
-#warning SLEEF library not presented, sve_intrin_wrapper.h will use for-loop implementations.
+#warning sve_intrin_wrapper.h is using for-loop implementations for math functions.
 static inline vec_s vec_log_s(vec_s a)
 {
     int i;
@@ -309,7 +328,7 @@ static inline vec_d vec_exp2_d (const vec_d a) { return vec_exp_d(vec_mul_d(a, v
 
 static inline vec_s vec_exp10_s(const vec_s a) { return vec_exp_s(vec_mul_s(a, vec_set1_s(M_LN10))); }
 static inline vec_d vec_exp10_d(const vec_d a) { return vec_exp_d(vec_mul_d(a, vec_set1_d(M_LN10))); }
-#endif  // End of "#ifdef USE_SLEEF"
+#endif  // End of "#if !defined(SVE_LOOP_VEC_MATH)"
 
 static inline vec_s vec_frsqrt_pf_s() { return vec_set1_s(1); }
 static inline vec_d vec_frsqrt_pf_d() { return vec_set1_d(1); }
